@@ -1,0 +1,29 @@
+{
+  "name": "fitter-cli",
+  "version": "0.0.1",
+  "description": "A cli npm-tool to write scripts quicker by installing custom-built templates and components quicker and smarter",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "fitter": "dist/index-cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mikeZyeman/fitter.git"
+  },
+  "author": "mikeZyeman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mikeZyeman/fitter/issues"
+  },
+  "homepage": "https://github.com/mikeZyeman/fitter#readme",
+  "dependencies": {
+    "@types/node": "^11.11.3",
+    "chalk": "^2.4.2",
+    "commander": "^2.19.0",
+    "fs-extra": "^7.0.1",
+    "inquirer": "^6.2.2"
+  }
+}
