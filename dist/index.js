@@ -1,3 +1,3 @@
 "use strict";
-var application_1 = require("./app/application");
+const application_1 = require("./app/application");
 module.exports = application_1.Application;

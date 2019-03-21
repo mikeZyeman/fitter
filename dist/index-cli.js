@@ -1,29 +1,19 @@
 #!/usr/bin/env node
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var commander_1 = __importDefault(require("commander"));
-var pkg = require('../package.json');
-var application_1 = require("./app/application");
-var CLI = (function (_super) {
-    __extends(CLI, _super);
-    function CLI() {
-        var _this = _super.call(this) || this;
+const commander_1 = __importDefault(require("commander"));
+let pkg = require('../package.json');
+const application_cli_1 = require("./app/application.cli");
+const chalk_1 = __importDefault(require("chalk"));
+const appcli = new application_cli_1.ApplicationCli();
+class CLI {
+    constructor() {
+        console.log(chalk_1.default.cyan(`fitter started.`));
+    }
+    initCLI() {
         commander_1.default
             .version(pkg.version)
             .option('-i, --information', 'Gets information from project/srcPath for language, framework, package.json and tags in directory')
@@ -31,27 +21,40 @@ var CLI = (function (_super) {
             'which displays the documentation')
             .option('-C, --configuration [configuration]', 'Fetches the current configuration')
             .option('--port [port]', 'sets port for hosted server');
-        _this.setInstall();
-        _this.setSave();
+        this.initInstall();
+        this.initArchitect();
         commander_1.default.parse(process.argv);
-        return _this;
     }
-    CLI.prototype.setInstall = function () {
-        commander_1.default.command('install [srcpath]')
-            .alias('ins')
+    initInstall() {
+        commander_1.default.command('fitter [srcpath]')
+            .alias('inst')
             .description('run setup commands for all envs')
             .option('')
-            .action(function (env) {
+            .action((env, options) => {
+            switch (options) {
+            }
             console.log(env);
         });
-    };
-    CLI.prototype.setSave = function () {
-        commander_1.default.command('save [srcpath]')
-            .option('')
-            .action(function (args) {
-            console.log(args);
+    }
+    initArchitect() {
+        commander_1.default.command('blueprint')
+            .alias('blue')
+            .description('The architect makes architect')
+            .option('-c, --create', 'creates a architect.')
+            .option('-d, --delete', 'deletes a architect')
+            .option('-l, --list', 'outputs a list of schemes')
+            .option('-D, --Detail', 'outputs detailed information about the selected architect')
+            .action((options) => {
+            if (options.create)
+                console.log('Create');
+            if (options.delete)
+                console.log('Delete');
+            if (options.list)
+                appcli.listBlueprints();
+            if (options.Detail)
+                appcli.infoBlueprint();
         });
-    };
-    return CLI;
-}(application_1.Application));
-var cli = new CLI();
+    }
+}
+const cli = new CLI();
+cli.initCLI();

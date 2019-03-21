@@ -3,13 +3,18 @@
 import program from 'commander';
 let pkg = require('../package.json');
 
-import { Application } from "./app/application";
+import { ApplicationCli } from "./app/application.cli";
+import chalk from "chalk";
 
-class CLI extends Application {
+const appcli = new ApplicationCli();
+
+class CLI {
 
     constructor() {
+        console.log(chalk.cyan(`fitter started.`))
+    }
 
-        super();
+    initCLI() {
         program
             .version(pkg.version)
             //Information
@@ -25,32 +30,46 @@ class CLI extends Application {
             //Options
             .option('--port [port]', 'sets port for hosted server');
 
-        this.setInstall();
-
-        this.setSave();
+        this.initInstall();
+        this.initArchitect();
 
         program.parse(process.argv);
 
 
     }
 
-    setInstall() {
-        program.command('install [srcpath]')
-            .alias('ins')
+    private initInstall() {
+        program.command('fitter [srcpath]')
+            .alias('inst')
             .description('run setup commands for all envs')
             .option('')
-            .action((env) => {
+            .action((env, options) => {
+
+                switch(options) {
+
+                }
+
                 console.log(env);
             })
     }
 
-    setSave() {
-        program.command('save [srcpath]')
-            .option('')
-            .action((args) => {
-                console.log(args);
+    private initArchitect() {
+        program.command('blueprint')
+            .alias('blue')
+            .description('The architect makes architect')
+            .option('-c, --create', 'creates a architect.')
+            .option('-d, --delete', 'deletes a architect')
+            .option('-l, --list', 'outputs a list of schemes')
+            .option('-D, --Detail', 'outputs detailed information about the selected architect')
+            .action((options) => {
+
+                if (options.create) console.log('Create');
+                if (options.delete) console.log('Delete');
+                if (options.list) appcli.listBlueprints();
+                if (options.Detail) appcli.infoBlueprint();
             })
     }
 }
 
 const cli: CLI = new CLI();
+cli.initCLI();
