@@ -3,10 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Architect_1 = require("./architect/Architect");
 const architect = new Architect_1.Architect();
 class Application {
-    makeSave(name) {
-        architect.drawBlueprint(name);
+    async createBlueprint(name) {
+        await architect.drawBlueprint(name);
     }
-    mark() {
+    async deleteBlueprint(name) {
+        await architect.deleteBlueprint(name);
     }
     async getBlueprints() {
         return await architect.getBlueprints();

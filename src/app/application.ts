@@ -1,27 +1,32 @@
 import { Architect } from "./architect/Architect";
+
 /*
-import { Implement } from "./fitter/implement";
+import { Implement } from "./installer/implement";
 */
 
+
 const architect = new Architect();
+
 /*
 const install = new Implement();
 */
+
 export class Application {
 
-    makeSave(name: string) {
-        architect.drawBlueprint(name);
+    public async createBlueprint(name: string) {
+        await architect.drawBlueprint(name);
     }
 
-    mark() {
-
+    public async deleteBlueprint(name: string) {
+        await architect.deleteBlueprint(name);
     }
 
-    async getBlueprints() {
+
+    public async getBlueprints() {
         return await architect.getBlueprints();
     }
 
-    async getBlueprint(file: string) {
+    public async getBlueprint(file: string) {
         return await architect.getBlueprint(file);
     }
 

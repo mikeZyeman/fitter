@@ -1,45 +1,45 @@
 import fs from 'fs-extra';
-import chalk from 'chalk';
+
+//import { Blueprint } from "../models/blueprint.model";
 
 export class Architect {
 
-    public async drawBlueprint(name: string, json: Object = {name: 'hi'}) {
 
-        try {
-            await fs.writeJSON(`./templates/${name}.json`, json);
-            console.log(chalk.greenBright('Successfully created a json file'));
-        } catch (err) {
-            console.error(err);
-        }
+
+    public async drawBlueprint(name: string, json: Object = {name: 'hi'}) {
+        await fs.writeJSON(`./templates/${name}.Blueprint.json`, json);
     }
 
     public buildJSON() {
+        this.scanning('./');
+    }
+
+    public markFiles() {
 
     }
 
-    public editBlueprint() {
+    public async editBlueprint() {
 
     }
 
-    public deleteBlueprint(file: string) {
-        fs.unlink(`./templates/${file}`, (err) => {
-            if (err) {
-                console.error(err);
-            } else {
-                console.log(chalk.greenBright(`File ${file} successfully deleted`));
-            }
-        })
+    public async deleteBlueprint(file: string) {
+        await fs.unlink(`./templates/${file}`)
     }
 
     public async getBlueprints() {
-        try {
-            return await fs.readdir('./templates');
-        } catch(err) {
-            console.error(err);
-        }
+        return await fs.readdir('./templates');
     }
 
     public async getBlueprint(file: string) {
-        return await fs.readJSON(`./templates/${file}`)
+        return await fs.readJSON(`./templates/${file}`);
     }
+
+    private scanning(path: string) {
+        fs.readJSON(`${path}`)
+            .then((files) => {
+                console.log(files);
+            })
+    }
+
+
 }

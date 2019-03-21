@@ -4,41 +4,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_extra_1 = __importDefault(require("fs-extra"));
-const chalk_1 = __importDefault(require("chalk"));
 class Architect {
     async drawBlueprint(name, json = { name: 'hi' }) {
-        try {
-            await fs_extra_1.default.writeJSON(`./templates/${name}.json`, json);
-            console.log(chalk_1.default.greenBright('Successfully created a json file'));
-        }
-        catch (err) {
-            console.error(err);
-        }
+        await fs_extra_1.default.writeJSON(`./templates/${name}.Blueprint.json`, json);
     }
     buildJSON() {
+        this.scanning('./');
     }
-    editBlueprint() {
+    markFiles() {
     }
-    deleteBlueprint(file) {
-        fs_extra_1.default.unlink(`./templates/${file}`, (err) => {
-            if (err) {
-                console.error(err);
-            }
-            else {
-                console.log(chalk_1.default.greenBright(`File ${file} successfully deleted`));
-            }
-        });
+    async editBlueprint() {
+    }
+    async deleteBlueprint(file) {
+        await fs_extra_1.default.unlink(`./templates/${file}`);
     }
     async getBlueprints() {
-        try {
-            return await fs_extra_1.default.readdir('./templates');
-        }
-        catch (err) {
-            console.error(err);
-        }
+        return await fs_extra_1.default.readdir('./templates');
     }
     async getBlueprint(file) {
         return await fs_extra_1.default.readJSON(`./templates/${file}`);
+    }
+    scanning(path) {
+        fs_extra_1.default.readJSON(`${path}`)
+            .then((files) => {
+            console.log(files);
+        });
     }
 }
 exports.Architect = Architect;
