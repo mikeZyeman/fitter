@@ -14,20 +14,20 @@ const install = new Implement();
 export class Application {
 
     public async createBlueprint(name: string) {
-        await architect.drawBlueprint(name);
+        architect.drawBlueprint(name);
     }
 
     public async deleteBlueprint(name: string) {
-        await architect.deleteBlueprint(name);
+        architect.deleteBlueprint(name);
     }
 
 
     public async getBlueprints() {
-        return await architect.getBlueprints();
+        return architect.getBlueprints();
     }
 
     public async getBlueprint(file: string) {
-        return await architect.getBlueprint(file);
+        return architect.getBlueprint(file);
     }
 
 }
