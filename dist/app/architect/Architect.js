@@ -4,12 +4,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_extra_1 = __importDefault(require("fs-extra"));
+const dirTree = require('directory-tree');
 class Architect {
     async drawBlueprint(name, json = { name: 'hi' }) {
         await fs_extra_1.default.writeJSON(`./templates/${name}.Blueprint.json`, json);
     }
     buildJSON() {
-        this.scanning('./');
+    }
+    scanning(path) {
+        let dTree = {
+            path: '',
+            name: '',
+            children: []
+        };
+        const tree = dirTree(path);
+        dTree.path = tree.path;
+        dTree.name = tree.name;
+        tree.children.forEach((child) => {
+            if (child.type === 'file') {
+                console.log(child.name + ' is a directory');
+            }
+            if (child.type === 'directory') {
+                console.log(child.name + ' is a directory');
+            }
+        });
     }
     markFiles() {
     }
@@ -19,16 +37,13 @@ class Architect {
         await fs_extra_1.default.unlink(`./templates/${file}`);
     }
     async getBlueprints() {
-        return await fs_extra_1.default.readdir('./templates');
+        return await this.getDir('./templates');
     }
     async getBlueprint(file) {
         return await fs_extra_1.default.readJSON(`./templates/${file}`);
     }
-    scanning(path) {
-        fs_extra_1.default.readJSON(`${path}`)
-            .then((files) => {
-            console.log(files);
-        });
+    async getDir(path) {
+        return await fs_extra_1.default.readdir(path);
     }
 }
 exports.Architect = Architect;

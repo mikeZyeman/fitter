@@ -21,13 +21,18 @@ export class Application {
         architect.deleteBlueprint(name);
     }
 
-
     public async getBlueprints() {
         return architect.getBlueprints();
     }
 
     public async getBlueprint(file: string) {
+
         return architect.getBlueprint(file);
+    }
+
+
+    public install() {
+
     }
 
 }

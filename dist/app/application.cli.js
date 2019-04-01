@@ -6,10 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const inquirer_1 = __importDefault(require("inquirer"));
 const chalk_1 = __importDefault(require("chalk"));
 const application_1 = require("./application");
+const architect_1 = require("./architect/architect");
+const arch = new architect_1.Architect();
 inquirer_1.default.registerPrompt('directory', require('inquirer-select-directory'));
 class ApplicationCli extends application_1.Application {
     constructor() {
-        super();
+        super(...arguments);
         this.message = "";
         this.confirmation = {
             type: "confirm",
@@ -18,7 +20,7 @@ class ApplicationCli extends application_1.Application {
         };
         this.getFile = {
             type: "directory",
-            name: "chooseFile",
+            name: "getFile",
             basePath: "./templates",
             options: {
                 displayFiles: true
@@ -32,22 +34,16 @@ class ApplicationCli extends application_1.Application {
             type: "input",
         };
     }
-    drawBlueprint() {
+    drawBlue(path) {
         this.getString.name = 'name';
         this.getString.message = 'How would you call your blueprint?';
         inquirer_1.default.prompt([this.getString])
             .then((answer) => {
-            this.drawBlueprint(answer.name)
-                .then(() => {
-                console.log(chalk_1.default.greenBright('Bluepring successfully created'));
-            })
-                .catch((err) => {
-                console.log(chalk_1.default.bgRedBright('Something went wrong while creating'));
-                console.log(err);
-            });
+            arch.scanning(path);
+            console.log(answer);
         });
     }
-    dropBlueprint() {
+    dropBlue() {
         this.getBlueprints()
             .then((list) => {
             if (list === null) {
@@ -72,7 +68,7 @@ class ApplicationCli extends application_1.Application {
             console.error(err);
         });
     }
-    listBlueprints() {
+    listBlues() {
         this.getBlueprints()
             .then((list) => {
             if (list === null) {
@@ -88,7 +84,7 @@ class ApplicationCli extends application_1.Application {
             console.error(err);
         });
     }
-    infoListBlueprint() {
+    infoList() {
         this.getBlueprints()
             .then((list) => {
             console.log(typeof list);
@@ -103,14 +99,7 @@ class ApplicationCli extends application_1.Application {
             this.getlist.choices = list;
             inquirer_1.default.prompt([this.getlist])
                 .then((answer) => {
-                this.getBlueprint(answer.chooseBlueprint)
-                    .then((data) => {
-                    console.log(data);
-                })
-                    .catch((err) => {
-                    console.log(chalk_1.default.bgRedBright('Something went wrong while getting information from selected blueprint'));
-                    console.error(err);
-                });
+                this.infoBlue(answer.selectBlueprint);
             });
         })
             .catch((err) => {
@@ -118,7 +107,7 @@ class ApplicationCli extends application_1.Application {
             console.error(err);
         });
     }
-    infoBlueprint(name) {
+    infoBlue(name) {
         this.getBlueprint(name)
             .then((data) => {
             console.log(data);

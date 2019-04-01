@@ -15,5 +15,7 @@ class Application {
     async getBlueprint(file) {
         return architect.getBlueprint(file);
     }
+    install() {
+    }
 }
 exports.Application = Application;
