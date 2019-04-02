@@ -23,51 +23,9 @@ export class Architect {
         let files: string[] = [];
         let directories: any[] = [];
 
-        const recursiveFunc = (Child: any, path: string = "") => {
-
-            let type: string = Child.type;
-            let name: string = Child.name;
-            let files: string[] = [];
-            let directories: any[] = [];
-
-            if (Child.type === 'directory') {
-                Child.children.forEach((child: any) => {
-                    let content = recursiveFunc(child, path + Child.name + '/');
-                    if (content.type === 'file') {
-                        files = [...files, content.name]
-                    }
-                    if (content.type === 'directory') {
-                        directories = [...directories, {
-                            name: content.name,
-                            files: content.files,
-                            directories: content.directories
-                        }]
-                    }
-                });
-            }
-
-            return {
-                type: type,
-                name: name,
-                files: files,
-                directories: directories
-            };
-
-        };
-
         tree.children.forEach((child: any) => {
-            let content = recursiveFunc(child);
-
-            if (content.type === 'file') {
-                files = [...files, content.name]
-            }
-            if (content.type === 'directory') {
-                directories = [...directories, {
-                    name: content.name,
-                    files: content.files,
-                    directories: content.directories
-                }]
-            }
+            let content = this.recursiveFunc(child);
+            [files, directories] = this.addContent(files, directories, content);
         });
 
         return {
@@ -76,6 +34,37 @@ export class Architect {
             files: files,
             directories: directories
         };
+    }
+
+    private recursiveFunc(Child: any, path: string = ""): any {
+        let type: string = Child.type;
+        let name: string = Child.name;
+        let files: string[] = [];
+        let directories: any[] = [];
+
+        if (Child.type === 'directory') {
+            Child.children.forEach((child: any) => {
+                let content = this.recursiveFunc(child, path + Child.name + '/');
+                [files, directories] = this.addContent(files, directories, content);
+            });
+        }
+
+        return { type: type, name: name, files: files, directories: directories };
+    }
+
+    private addContent(files: string[] ,directories: any[], content: any) {
+
+        if (content.type === 'file') {
+            files = [...files, content.name]
+        } else if (content.type === 'directory') {
+            directories = [...directories, {
+                name: content.name,
+                files: content.files,
+                directories: content.directories
+            }]
+        }
+
+        return [files, directories];
     }
 
     public markFiles() {
