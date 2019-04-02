@@ -91,15 +91,15 @@ export class Architect {
     }
 
     public async getBlueprints() {
-        return await this.getDir('./templates');
+        return this.getDir('./templates');
     }
 
     public async getBlueprint(file: string) {
-        return await fs.readJSON(`./templates/${file}`);
+        return fs.readJSON(`./templates/${file}`);
     }
 
     private async getDir(path: string) {
-        return await fs.readdir(path);
+        return fs.readdir(path);
     }
 
 }
