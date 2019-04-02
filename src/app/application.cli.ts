@@ -163,6 +163,6 @@ export class ApplicationCli extends Application {
     }
 
     async setQuestions(questions: any[]) {
-        return await prompts(questions);
+        return prompts(questions);
     }
 }
