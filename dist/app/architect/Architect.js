@@ -12,22 +12,56 @@ class Architect {
     buildJSON() {
     }
     scanning(path) {
-        let dTree = {
-            path: '',
-            name: '',
-            children: []
-        };
         const tree = dirTree(path);
-        dTree.path = tree.path;
-        dTree.name = tree.name;
-        tree.children.forEach((child) => {
-            if (child.type === 'file') {
-                console.log(child.name + ' is a directory');
+        let name = tree.name;
+        let files = [];
+        let directories = [];
+        const recursiveFunc = (Child, path = "") => {
+            let type = Child.type;
+            let name = Child.name;
+            let files = [];
+            let directories = [];
+            if (Child.type === 'directory') {
+                Child.children.forEach((child) => {
+                    let content = recursiveFunc(child, path + Child.name + '/');
+                    if (content.type === 'file') {
+                        files = [...files, content.name];
+                    }
+                    if (content.type === 'directory') {
+                        directories = [...directories, {
+                                name: content.name,
+                                files: content.files,
+                                directories: content.directories
+                            }];
+                    }
+                });
             }
-            if (child.type === 'directory') {
-                console.log(child.name + ' is a directory');
+            return {
+                type: type,
+                name: name,
+                files: files,
+                directories: directories
+            };
+        };
+        tree.children.forEach((child) => {
+            let content = recursiveFunc(child);
+            if (content.type === 'file') {
+                files = [...files, content.name];
+            }
+            if (content.type === 'directory') {
+                directories = [...directories, {
+                        name: content.name,
+                        files: content.files,
+                        directories: content.directories
+                    }];
             }
         });
+        return {
+            path: path,
+            name: name,
+            files: files,
+            directories: directories
+        };
     }
     markFiles() {
     }

@@ -3,12 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const inquirer_1 = __importDefault(require("inquirer"));
 const chalk_1 = __importDefault(require("chalk"));
+const prompts_1 = __importDefault(require("prompts"));
 const application_1 = require("./application");
 const architect_1 = require("./architect/architect");
+const Prompt = require('prompt-checkbox');
 const arch = new architect_1.Architect();
-inquirer_1.default.registerPrompt('directory', require('inquirer-select-directory'));
 class ApplicationCli extends application_1.Application {
     constructor() {
         super(...arguments);
@@ -35,12 +35,21 @@ class ApplicationCli extends application_1.Application {
         };
     }
     drawBlue(path) {
-        this.getString.name = 'name';
-        this.getString.message = 'How would you call your blueprint?';
-        inquirer_1.default.prompt([this.getString])
-            .then((answer) => {
-            arch.scanning(path);
-            console.log(answer);
+        let questions = [
+            {
+                type: 'text',
+                name: 'dish',
+                message: 'Do you like pizza?'
+            },
+            {
+                type: (prev) => prev == 'pizza' ? 'text' : null,
+                name: 'topping',
+                message: 'Name a topping'
+            }
+        ];
+        this.setQuestions(questions)
+            .then((data) => {
+            console.log(data);
         });
     }
     dropBlue() {
@@ -52,17 +61,6 @@ class ApplicationCli extends application_1.Application {
             }
             this.getlist.message = "Which blueprint do you want to delete?";
             this.getlist.choices = list;
-            inquirer_1.default.prompt([this.getlist])
-                .then((answer) => {
-                this.deleteBlueprint(answer.selectBlueprint)
-                    .then(() => {
-                    console.log(chalk_1.default.greenBright('Successfully deleted'));
-                })
-                    .catch((err) => {
-                    console.log(chalk_1.default.bgRedBright('Something went wrong while deleting'));
-                    console.error(err);
-                });
-            });
         })
             .catch((err) => {
             console.error(err);
@@ -97,10 +95,6 @@ class ApplicationCli extends application_1.Application {
             }
             this.getlist.message = "Which blueprint do you want to know in detail?";
             this.getlist.choices = list;
-            inquirer_1.default.prompt([this.getlist])
-                .then((answer) => {
-                this.infoBlue(answer.selectBlueprint);
-            });
         })
             .catch((err) => {
             console.log(chalk_1.default.bgRedBright('Something went wrong while listing up blueprints'));
@@ -116,6 +110,9 @@ class ApplicationCli extends application_1.Application {
             console.log(chalk_1.default.bgRedBright('Something went wrong while getting information from selected blueprint'));
             console.error(err);
         });
+    }
+    async setQuestions(questions) {
+        return await prompts_1.default(questions);
     }
 }
 exports.ApplicationCli = ApplicationCli;

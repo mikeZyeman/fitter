@@ -3,7 +3,9 @@ const dirTree = require('directory-tree');
 
 //import { Blueprint } from "../models/blueprint.model";
 
+
 export class Architect {
+
 
     public async drawBlueprint(name: string, json: Object = {name: 'hi'}) {
         await fs.writeJSON(`./templates/${name}.Blueprint.json`, json);
@@ -15,26 +17,65 @@ export class Architect {
 
     public scanning(path: string) {
 
-        let dTree: any = {
-            path: '',
-            name: '',
-            children: []
-        };
-
         const tree = dirTree(path);
 
-        dTree.path = tree.path;
-        dTree.name = tree.name;
+        let name: string = tree.name;
+        let files: string[] = [];
+        let directories: any[] = [];
+
+        const recursiveFunc = (Child: any, path: string = "") => {
+
+            let type: string = Child.type;
+            let name: string = Child.name;
+            let files: string[] = [];
+            let directories: any[] = [];
+
+            if (Child.type === 'directory') {
+                Child.children.forEach((child: any) => {
+                    let content = recursiveFunc(child, path + Child.name + '/');
+                    if (content.type === 'file') {
+                        files = [...files, content.name]
+                    }
+                    if (content.type === 'directory') {
+                        directories = [...directories, {
+                            name: content.name,
+                            files: content.files,
+                            directories: content.directories
+                        }]
+                    }
+                });
+            }
+
+            return {
+                type: type,
+                name: name,
+                files: files,
+                directories: directories
+            };
+
+        };
 
         tree.children.forEach((child: any) => {
-            if (child.type === 'file') {
-                console.log(child.name + ' is a directory')
-            }
-            if (child.type === 'directory') {
-                console.log(child.name + ' is a directory')
-            }
-        })
+            let content = recursiveFunc(child);
 
+            if (content.type === 'file') {
+                files = [...files, content.name]
+            }
+            if (content.type === 'directory') {
+                directories = [...directories, {
+                    name: content.name,
+                    files: content.files,
+                    directories: content.directories
+                }]
+            }
+        });
+
+        return {
+            path: path,
+            name: name,
+            files: files,
+            directories: directories
+        };
     }
 
     public markFiles() {

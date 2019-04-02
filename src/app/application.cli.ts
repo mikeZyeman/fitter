@@ -1,16 +1,13 @@
-import inquirer from 'inquirer';
 import chalk from 'chalk';
-
-
+import prompts from 'prompts';
 
 import { Application } from './application';
-import { Architect } from './architect/architect';
+import { Architect} from './architect/architect';
 //import { Installer } from "./installer/installer";
 
+const Prompt = require('prompt-checkbox');
+
 const arch = new Architect();
-
-inquirer.registerPrompt('directory', require('inquirer-select-directory'));
-
 
 
 export class ApplicationCli extends Application {
@@ -39,65 +36,32 @@ export class ApplicationCli extends Application {
     };
 
     drawBlue(path: string) {
-        this.getString.name = 'name';
-        this.getString.message = 'How would you call your blueprint?';
 
-        inquirer.prompt([this.getString])
-            .then((answer: {}) => {
+        //console.log(arch.scanning(path));
 
-                arch.scanning(path);
-                console.log(answer)
-                /*
 
-                var prompt = new Prompt({
-                    name: 'colors',
-                    message: 'Which files do you want to copy into your Blueprint? Press Spacebar to mark the checkboxes. Press Enter to submit.',
-                    choices: {
-                        dependencies: [
+        let questions = [
+            {
+                type: 'text',
+                name: 'dish',
+                message: 'Do you like pizza?'
+            },
+            {
+                type: (prev: any) => prev == 'pizza' ? 'text': null,
+                name: 'topping',
+                message: 'Name a topping'
+            }
+        ];
 
-                        ],
-                        devDependencies: ['mocha', 'kind-of']
-                    }
-                });
-
-                prompt.run()
-                    .then((answer: {}) => {
-                        console.log(answer);
-                    })
-                    */
+        this.setQuestions(questions)
+            .then((data: any) => {
+                console.log(data);
             })
-
-        /*
-
-        inquirer.prompt([this.getString])
-            .then((answer: {}) => {
-
-                arch.scanning(path)
-                    .then((data) => {
-                        console.log(data)
-                    })
-
-
-
-
-                /*
-                // @ts-ignore
-                this.createBlueprint(answer.name)
-                    .then(() => {
-                        console.log(chalk.greenBright('Blueprint successfully created'));
-                    })
-                    .catch((err: any) => {
-                        console.log(chalk.bgRedBright('Something went wrong while creating'));
-                        console.log(err);
-                    })
-            })
-
-    */
     }
 
     dropBlue() {
         this.getBlueprints()
-            .then((list) => {
+            .then( (list) => {
                 if (list === null) {
                     console.log(chalk.redBright('There are no Blueprints'));
                     return;
@@ -105,6 +69,12 @@ export class ApplicationCli extends Application {
 
                 this.getlist.message = "Which blueprint do you want to delete?";
                 this.getlist.choices = list;
+
+
+
+                /*
+
+                replace inquirerjs with prompt
 
                 inquirer.prompt([this.getlist])
                     .then((answer: {}) => {
@@ -118,6 +88,8 @@ export class ApplicationCli extends Application {
                                 console.error(err);
                             })
                     })
+                    */
+
             })
             .catch((err) => {
                 console.error(err)
@@ -161,11 +133,17 @@ export class ApplicationCli extends Application {
                 this.getlist.message = "Which blueprint do you want to know in detail?";
                 this.getlist.choices = list;
 
+                /*
+
+                replace inquirerjs with prompt
+
                 inquirer.prompt([this.getlist])
                     .then((answer: {}) => {
                         // @ts-ignore
                         this.infoBlue(answer.selectBlueprint);
                     })
+
+                    */
             })
             .catch((err) => {
                 console.log(chalk.bgRedBright('Something went wrong while listing up blueprints'));
@@ -184,5 +162,7 @@ export class ApplicationCli extends Application {
             });
     }
 
-
+    async setQuestions(questions: any[]) {
+        return await prompts(questions);
+    }
 }

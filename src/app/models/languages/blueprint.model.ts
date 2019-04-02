@@ -4,6 +4,7 @@ import { Javascript } from "./javascript.model";
 import { Typescript } from "./typescript.model";
 
 type scripttypes = CSS | HTML | Javascript | Typescript;
+type directories = scripttypes[];
 
 export interface Blueprint {
 
