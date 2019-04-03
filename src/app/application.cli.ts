@@ -51,7 +51,7 @@ export class ApplicationCli extends Application {
     dropBlue() {
         this.getBlueprints()
             .then( (list) => {
-                if (list === null) throw 'There are no blueprints in templates folder';
+                if (list === null) throw new Error('There are no blueprints in templates folder');
                 let question = list.length === 1 ? this.fileConfirm : this.fileSelect;
                 question.message = list.length === 1 ? list[0] + ' is the only file. Do you still want to delete it?'
                     : 'Which blueprint do you want to delete?';
@@ -90,7 +90,7 @@ export class ApplicationCli extends Application {
     infoDetail() {
         this.getBlueprints()
             .then((list: any) => {
-                if (list === null) throw 'There are no blueprints in templates folder';
+                if (list === null) throw new Error('There are no blueprints in templates folder');
                 let question = list.length === 1 ? this.fileConfirm : this.fileSelect;
                 question.message = list.length === 1 ? list[0] + ' is the only file. Do you want to view it?'
                     : 'Which blueprint do you want to view in detail?';
@@ -120,7 +120,7 @@ export class ApplicationCli extends Application {
     }
 
     async promptout(questions: any[]) {
-        return await prompt(questions);
+        return prompt(questions);
     }
 
 }
