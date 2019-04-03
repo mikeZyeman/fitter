@@ -1,5 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class Installer {
+class Implementer {
 }
-exports.Installer = Installer;
+exports.Implementer = Implementer;

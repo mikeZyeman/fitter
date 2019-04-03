@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Architect_1 = require("./architect/Architect");
+const Architect_1 = require("./Architect");
 const architect = new Architect_1.Architect();
 class Application {
     async createBlueprint(name) {
@@ -15,7 +15,11 @@ class Application {
     async getBlueprint(file) {
         return architect.getBlueprint(file);
     }
-    install() {
+    scanDir(path) {
+        return architect.scanning(path);
+    }
+    redefJSON(json) {
+        return architect.redefJSON(json);
     }
 }
 exports.Application = Application;

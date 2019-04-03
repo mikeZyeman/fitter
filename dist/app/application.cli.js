@@ -4,63 +4,39 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chalk_1 = __importDefault(require("chalk"));
-const prompts_1 = __importDefault(require("prompts"));
+const { prompt } = require('enquirer');
 const application_1 = require("./application");
-const architect_1 = require("./architect/architect");
-const Prompt = require('prompt-checkbox');
-const arch = new architect_1.Architect();
 class ApplicationCli extends application_1.Application {
-    constructor() {
-        super(...arguments);
-        this.message = "";
-        this.confirmation = {
-            type: "confirm",
-            name: "confirmation",
-            default: false
-        };
-        this.getFile = {
-            type: "directory",
-            name: "getFile",
-            basePath: "./templates",
-            options: {
-                displayFiles: true
-            }
-        };
-        this.getlist = {
-            type: "list",
-            name: "selectBlueprint",
-        };
-        this.getString = {
-            type: "input",
-        };
-    }
     drawBlue(path) {
-        let questions = [
+        const dirtree = this.scanDir(path);
+        const questions = [
             {
-                type: 'text',
-                name: 'dish',
-                message: 'Do you like pizza?'
+                type: 'input',
+                name: 'bpname',
+                message: 'Step 1: how would you name your blueprint'
             },
             {
-                type: (prev) => prev == 'pizza' ? 'text' : null,
-                name: 'topping',
-                message: 'Name a topping'
+                type: 'multiselect',
+                name: 'selected-files',
+                message: 'Step 2: Mark the files you want to copy.',
+                initial: '',
+                choices: this.redefJSON(dirtree),
+                result(values) {
+                    return this.map(values);
+                }
             }
         ];
-        this.setQuestions(questions)
-            .then((data) => {
-            console.log(data);
-        });
+        this.promptout(questions)
+            .then((answer) => console.log(answer))
+            .catch(console.error);
     }
     dropBlue() {
         this.getBlueprints()
             .then((list) => {
             if (list === null) {
                 console.log(chalk_1.default.redBright('There are no Blueprints'));
-                return;
+                return null;
             }
-            this.getlist.message = "Which blueprint do you want to delete?";
-            this.getlist.choices = list;
         })
             .catch((err) => {
             console.error(err);
@@ -82,19 +58,29 @@ class ApplicationCli extends application_1.Application {
             console.error(err);
         });
     }
-    infoList() {
+    infoDetail() {
         this.getBlueprints()
             .then((list) => {
-            console.log(typeof list);
             if (list === null) {
                 console.log(chalk_1.default.redBright('There are no Blueprints'));
-                return;
+                return null;
             }
             if (list.length === 1) {
-                return;
+                return null;
             }
-            this.getlist.message = "Which blueprint do you want to know in detail?";
-            this.getlist.choices = list;
+            const questions = [
+                {
+                    type: 'select',
+                    name: 'blueprint',
+                    message: 'Which blueprint do you want to view in detail?',
+                    initial: 1,
+                    choices: list
+                }
+            ];
+            this.promptout(questions)
+                .then((answer) => {
+                console.log(answer.blueprint);
+            });
         })
             .catch((err) => {
             console.log(chalk_1.default.bgRedBright('Something went wrong while listing up blueprints'));
@@ -111,8 +97,8 @@ class ApplicationCli extends application_1.Application {
             console.error(err);
         });
     }
-    async setQuestions(questions) {
-        return await prompts_1.default(questions);
+    async promptout(questions) {
+        return await prompt(questions);
     }
 }
 exports.ApplicationCli = ApplicationCli;

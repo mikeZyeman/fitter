@@ -1,4 +1,4 @@
-import { Architect } from "./architect/Architect";
+import { Architect } from "./Architect";
 
 /*
 import { Implement } from "./installer/implement";
@@ -30,9 +30,11 @@ export class Application {
         return architect.getBlueprint(file);
     }
 
-
-    public install() {
-
+    protected scanDir(path: string) {
+        return architect.scanning(path);
     }
 
+    protected redefJSON(json: any) {
+        return architect.redefJSON(json);
+    }
 }

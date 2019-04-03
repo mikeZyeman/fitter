@@ -45,7 +45,7 @@ class CLI {
             if (options.delete)
                 appcli.dropBlue();
             if (options.Detail) {
-                appcli.infoList();
+                appcli.infoDetail();
             }
         });
     }

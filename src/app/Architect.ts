@@ -3,6 +3,12 @@ const dirTree = require('directory-tree');
 
 //import { Blueprint } from "../models/blueprint.model";
 
+interface DirTreeJSON {
+    path: string,
+    name: string,
+    directories: any[],
+    files: string[]
+}
 
 export class Architect {
 
@@ -15,36 +21,38 @@ export class Architect {
 
     }
 
-    public scanning(path: string) {
+    public scanning(path: string): DirTreeJSON {
 
         const tree = dirTree(path);
 
         let name: string = tree.name;
-        let files: string[] = [];
         let directories: any[] = [];
+        let files: string[] = [];
 
         tree.children.forEach((child: any) => {
-            let content = this.recursiveFunc(child);
+            let content = this.addSubdir(child);
             [files, directories] = this.addContent(files, directories, content);
         });
+
+
 
         return {
             path: path,
             name: name,
-            files: files,
-            directories: directories
+            directories: directories,
+            files: files
         };
     }
 
-    private recursiveFunc(Child: any, path: string = ""): any {
+    private addSubdir(Child: any, path: string = ""): any {
         let type: string = Child.type;
         let name: string = Child.name;
-        let files: string[] = [];
         let directories: any[] = [];
+        let files: string[] = [];
 
         if (Child.type === 'directory') {
             Child.children.forEach((child: any) => {
-                let content = this.recursiveFunc(child, path + Child.name + '/');
+                let content = this.addSubdir(child, path + Child.name + '/');
                 [files, directories] = this.addContent(files, directories, content);
             });
         }
@@ -53,7 +61,6 @@ export class Architect {
     }
 
     private addContent(files: string[] ,directories: any[], content: any) {
-
         if (content.type === 'file') {
             files = [...files, content.name]
         } else if (content.type === 'directory') {
@@ -63,12 +70,31 @@ export class Architect {
                 directories: content.directories
             }]
         }
-
         return [files, directories];
     }
 
-    public markFiles() {
+    public redefJSON(json: DirTreeJSON, path?: string) {
+        let choices: any[] = [];
+        path = path === undefined ? '' : path;
 
+        json.directories.forEach((dir: any) => {
+            let choice: any = {
+                name: dir.name,
+                value: path + '/' + dir.name,
+                choices: this.redefJSON(dir, path + '/' + dir.name)
+            };
+
+            choices = [...choices, choice];
+        });
+        json.files.forEach((file: string) => {
+            choices = [...choices, {
+                name: path + '/' + file,
+                message: file,
+                value: path + '/' + file
+            }]
+        });
+
+        return choices;
     }
 
     public async editBlueprint() {

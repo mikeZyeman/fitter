@@ -46,11 +46,10 @@ class CLI {
             .option('-D, --Detail', 'outputs detailed information about the selected blueprint')
             .action((options) => {
 
-
                 if (options.create) appcli.drawBlue(process.cwd());
                 if (options.delete) appcli.dropBlue();
                 if (options.Detail) {
-                    appcli.infoList()
+                    appcli.infoDetail()
                 }
             })
     }

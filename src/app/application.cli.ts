@@ -1,62 +1,38 @@
 import chalk from 'chalk';
-import prompts from 'prompts';
+
+const { prompt } = require('enquirer');
 
 import { Application } from './application';
-import { Architect} from './architect/architect';
+//import { Architect} from './Architect';
 //import { Installer } from "./installer/installer";
-
-const Prompt = require('prompt-checkbox');
-
-const arch = new Architect();
 
 
 export class ApplicationCli extends Application {
 
-    message: string = "";
-
-    confirmation: any = {
-        type: "confirm",
-        name: "confirmation",
-        default: false
-    };
-    getFile: any = {
-        type: "directory",
-        name: "getFile",
-        basePath: "./templates",
-        options: {
-            displayFiles:true
-        }
-    };
-    getlist: any = {
-        type: "list",
-        name: "selectBlueprint",
-    };
-    getString: any = {
-        type: "input",
-    };
-
     drawBlue(path: string) {
+        const dirtree = this.scanDir(path);
 
-        //console.log(arch.scanning(path));
-
-
-        let questions = [
+        const questions: any[] = [
             {
-                type: 'text',
-                name: 'dish',
-                message: 'Do you like pizza?'
+                type: 'input',
+                name: 'bpname',
+                message: 'Step 1: how would you name your blueprint'
             },
             {
-                type: (prev: any) => prev == 'pizza' ? 'text': null,
-                name: 'topping',
-                message: 'Name a topping'
+                type: 'multiselect',
+                name: 'selected-files',
+                message: 'Step 2: Mark the files you want to copy.',
+                initial: '',
+                choices: this.redefJSON(dirtree),
+                result(values: any) {
+                    return this.map(values);
+                }
             }
         ];
 
-        this.setQuestions(questions)
-            .then((data: any) => {
-                console.log(data);
-            })
+        this.promptout(questions)
+            .then((answer: any) => console.log(answer))
+            .catch(console.error);
     }
 
     dropBlue() {
@@ -64,17 +40,12 @@ export class ApplicationCli extends Application {
             .then( (list) => {
                 if (list === null) {
                     console.log(chalk.redBright('There are no Blueprints'));
-                    return;
+                    return null;
                 }
-
-                this.getlist.message = "Which blueprint do you want to delete?";
-                this.getlist.choices = list;
-
-
 
                 /*
 
-                replace inquirerjs with prompt
+                replace inquirerjs with enquirer
 
                 inquirer.prompt([this.getlist])
                     .then((answer: {}) => {
@@ -112,30 +83,39 @@ export class ApplicationCli extends Application {
                 console.log(chalk.bgRedBright('Something went wrong while listing up blueprints'));
                 console.error(err)
             })
-
     }
 
-    infoList() {
+    infoDetail() {
         this.getBlueprints()
             .then((list) => {
-                console.log(typeof list);
-
                 if (list === null) {
                     console.log(chalk.redBright('There are no Blueprints'));
-                    return;
+                    return null;
                 }
 
                 if (list.length === 1) {
 
-                    return;
+                    return null;
                 }
+                
+                const questions = [
+                    {
+                        type: 'select',
+                        name: 'blueprint',
+                        message: 'Which blueprint do you want to view in detail?',
+                        initial: 1,
+                        choices: list
+                    }
+                ];
 
-                this.getlist.message = "Which blueprint do you want to know in detail?";
-                this.getlist.choices = list;
+                this.promptout(questions)
+                    .then((answer: any) => {
+                        console.log(answer.blueprint);
+                    })
 
                 /*
 
-                replace inquirerjs with prompt
+                replace inquirerjs with enquirer
 
                 inquirer.prompt([this.getlist])
                     .then((answer: {}) => {
@@ -162,7 +142,8 @@ export class ApplicationCli extends Application {
             });
     }
 
-    async setQuestions(questions: any[]) {
-        return prompts(questions);
+    async promptout(questions: any[]) {
+        return await prompt(questions);
     }
+
 }
