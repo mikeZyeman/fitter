@@ -37,6 +37,22 @@ class ApplicationCli extends application_1.Application {
                 console.log(chalk_1.default.redBright('There are no Blueprints'));
                 return null;
             }
+            if (list.length === 1) {
+                return null;
+            }
+            const questions = [
+                {
+                    type: 'select',
+                    name: 'blueprint',
+                    message: 'Which blueprint do you want to delete?',
+                    initial: 1,
+                    choices: list
+                }
+            ];
+            this.promptout(questions)
+                .then((answer) => {
+                console.log(answer.blueprint);
+            });
         })
             .catch((err) => {
             console.error(err);

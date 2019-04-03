@@ -43,23 +43,25 @@ export class ApplicationCli extends Application {
                     return null;
                 }
 
-                /*
+                if (list.length === 1) {
 
-                replace inquirerjs with enquirer
+                    return null;
+                }
 
-                inquirer.prompt([this.getlist])
-                    .then((answer: {}) => {
-                        // @ts-ignore
-                        this.deleteBlueprint(answer.selectBlueprint)
-                            .then(() => {
-                                console.log(chalk.greenBright('Successfully deleted'));
-                            })
-                            .catch((err: any) => {
-                                console.log(chalk.bgRedBright('Something went wrong while deleting'));
-                                console.error(err);
-                            })
+                const questions = [
+                    {
+                        type: 'select',
+                        name: 'blueprint',
+                        message: 'Which blueprint do you want to delete?',
+                        initial: 1,
+                        choices: list
+                    }
+                ];
+
+                this.promptout(questions)
+                    .then((answer: any) => {
+                        console.log(answer.blueprint);
                     })
-                    */
 
             })
             .catch((err) => {
