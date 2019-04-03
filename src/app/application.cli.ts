@@ -97,7 +97,7 @@ export class ApplicationCli extends Application {
 
                     return null;
                 }
-                
+
                 const questions = [
                     {
                         type: 'select',
