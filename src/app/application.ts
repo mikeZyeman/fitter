@@ -26,7 +26,6 @@ export class Application {
     }
 
     public async getBlueprint(file: string) {
-
         return architect.getBlueprint(file);
     }
 

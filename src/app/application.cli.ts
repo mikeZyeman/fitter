@@ -9,6 +9,19 @@ import { Application } from './application';
 
 export class ApplicationCli extends Application {
 
+    fileSelect = {
+        type: 'select',
+        name: 'blueprint',
+        message: '',
+        initial: 1,
+        choices: []
+    };
+    fileConfirm = {
+        type: 'confirm',
+        name: 'confirm',
+        message: ''
+    };
+
     drawBlue(path: string) {
         const dirtree = this.scanDir(path);
 
@@ -38,31 +51,18 @@ export class ApplicationCli extends Application {
     dropBlue() {
         this.getBlueprints()
             .then( (list) => {
-                if (list === null) {
-                    console.log(chalk.redBright('There are no Blueprints'));
-                    return null;
-                }
+                if (list === null) throw 'There are no blueprints in templates folder';
+                let question = list.length === 1 ? this.fileConfirm : this.fileSelect;
+                question.message = list.length === 1 ? list[0] + ' is the only file. Do you still want to delete it?'
+                    : 'Which blueprint do you want to delete?';
+                // @ts-ignore
+                question.choices = list.length !== 1 ? list: null;
 
-                if (list.length === 1) {
-
-                    return null;
-                }
-
-                const questions = [
-                    {
-                        type: 'select',
-                        name: 'blueprint',
-                        message: 'Which blueprint do you want to delete?',
-                        initial: 1,
-                        choices: list
-                    }
-                ];
-
-                this.promptout(questions)
+                this.promptout([question])
                     .then((answer: any) => {
-                        console.log(answer.blueprint);
-                    })
-
+                        if (answer.confirm) this.deleteBlueprint(list[0]);
+                        if (answer.blueprint) this.deleteBlueprint(answer.blueprint);
+                })
             })
             .catch((err) => {
                 console.error(err)
@@ -89,43 +89,18 @@ export class ApplicationCli extends Application {
 
     infoDetail() {
         this.getBlueprints()
-            .then((list) => {
-                if (list === null) {
-                    console.log(chalk.redBright('There are no Blueprints'));
-                    return null;
-                }
+            .then((list: any) => {
+                if (list === null) throw 'There are no blueprints in templates folder';
+                let question = list.length === 1 ? this.fileConfirm : this.fileSelect;
+                question.message = list.length === 1 ? list[0] + ' is the only file. Do you want to view it?'
+                    : 'Which blueprint do you want to view in detail?';
+                // @ts-ignore
+                question.choices = list.length !== 1 ? list: null;
 
-                if (list.length === 1) {
-
-                    return null;
-                }
-
-                const questions = [
-                    {
-                        type: 'select',
-                        name: 'blueprint',
-                        message: 'Which blueprint do you want to view in detail?',
-                        initial: 1,
-                        choices: list
-                    }
-                ];
-
-                this.promptout(questions)
-                    .then((answer: any) => {
-                        console.log(answer.blueprint);
-                    })
-
-                /*
-
-                replace inquirerjs with enquirer
-
-                inquirer.prompt([this.getlist])
-                    .then((answer: {}) => {
-                        // @ts-ignore
-                        this.infoBlue(answer.selectBlueprint);
-                    })
-
-                    */
+                this.promptout([question]).then((answer: any) => {
+                    if (answer.confirm) this.getBlueprint(list[0]).then(console.log);
+                    if (answer.blueprint) this.getBlueprint(answer.blueprint).then(console.log);
+                });
             })
             .catch((err) => {
                 console.log(chalk.bgRedBright('Something went wrong while listing up blueprints'));
