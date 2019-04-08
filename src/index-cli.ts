@@ -3,7 +3,7 @@
 import program from 'commander';
 import chalk from "chalk";
 
-import { ApplicationCli } from "./app/application.cli";
+import { ApplicationCli } from "./app/application-cli";
 
 const appcli = new ApplicationCli();
 const pkg = require('../package.json');
@@ -75,3 +75,5 @@ class CLI {
 
 const cli: CLI = new CLI();
 cli.initCLI();
+
+export { CLI };

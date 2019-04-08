@@ -21,13 +21,19 @@
   "homepage": "https://github.com/mikeZyeman/fitter#readme",
   "dependencies": {
     "@types/fs-extra": "^5.0.5",
-    "@types/node": "^11.11.3",
     "chalk": "^2.4.2",
     "commander": "^2.19.0",
     "directory-tree": "^2.2.1",
     "enquirer": "^2.3.0",
     "fs-extra": "^7.0.1",
-    "inquirer-select-directory": "^1.2.0",
-    "prompt-checkbox": "^2.2.0"
+    "inquirer-select-directory": "^1.2.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6",
+    "@types/node": "^11.13.0",
+    "chai": "^4.2.0",
+    "mocha": "^6.0.2",
+    "shelljs": "^0.8.3"
   }
 }

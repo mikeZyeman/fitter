@@ -49,7 +49,7 @@ class ApplicationCli extends application_1.Application {
         this.getBlueprints()
             .then((list) => {
             if (list === null)
-                throw 'There are no blueprints in templates folder';
+                throw new Error('There are no blueprints in templates folder');
             let question = list.length === 1 ? this.fileConfirm : this.fileSelect;
             question.message = list.length === 1 ? list[0] + ' is the only file. Do you still want to delete it?'
                 : 'Which blueprint do you want to delete?';
@@ -62,9 +62,7 @@ class ApplicationCli extends application_1.Application {
                     this.deleteBlueprint(answer.blueprint);
             });
         })
-            .catch((err) => {
-            console.error(err);
-        });
+            .catch(this.handleListError);
     }
     listBlues() {
         this.getBlueprints()
@@ -77,16 +75,13 @@ class ApplicationCli extends application_1.Application {
                 console.log(file);
             });
         })
-            .catch((err) => {
-            console.log(chalk_1.default.bgRedBright('Something went wrong while listing up blueprints'));
-            console.error(err);
-        });
+            .catch(this.handleListError);
     }
     infoDetail() {
         this.getBlueprints()
             .then((list) => {
             if (list === null)
-                throw 'There are no blueprints in templates folder';
+                throw new Error('There are no blueprints in templates folder');
             let question = list.length === 1 ? this.fileConfirm : this.fileSelect;
             question.message = list.length === 1 ? list[0] + ' is the only file. Do you want to view it?'
                 : 'Which blueprint do you want to view in detail?';
@@ -98,10 +93,7 @@ class ApplicationCli extends application_1.Application {
                     this.getBlueprint(answer.blueprint).then(console.log);
             });
         })
-            .catch((err) => {
-            console.log(chalk_1.default.bgRedBright('Something went wrong while listing up blueprints'));
-            console.error(err);
-        });
+            .catch(this.handleListError);
     }
     infoBlue(name) {
         this.getBlueprint(name)
@@ -114,7 +106,11 @@ class ApplicationCli extends application_1.Application {
         });
     }
     async promptout(questions) {
-        return await prompt(questions);
+        return prompt(questions);
+    }
+    handleListError(err) {
+        console.log(chalk_1.default.bgRedBright('Something went wrong while listing up blueprints'));
+        console.error(err);
     }
 }
 exports.ApplicationCli = ApplicationCli;

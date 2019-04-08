@@ -3,9 +3,6 @@ import chalk from 'chalk';
 const { prompt } = require('enquirer');
 
 import { Application } from './application';
-//import { Architect} from './Architect';
-//import { Installer } from "./installer/installer";
-
 
 export class ApplicationCli extends Application {
 
@@ -64,9 +61,7 @@ export class ApplicationCli extends Application {
                         if (answer.blueprint) this.deleteBlueprint(answer.blueprint);
                 })
             })
-            .catch((err) => {
-                console.error(err)
-            })
+            .catch(this.handleListError)
     }
 
     listBlues() {
@@ -81,10 +76,7 @@ export class ApplicationCli extends Application {
                     console.log(file);
                 });
             })
-            .catch((err) => {
-                console.log(chalk.bgRedBright('Something went wrong while listing up blueprints'));
-                console.error(err)
-            })
+            .catch(this.handleListError)
     }
 
     infoDetail() {
@@ -102,10 +94,7 @@ export class ApplicationCli extends Application {
                     if (answer.blueprint) this.getBlueprint(answer.blueprint).then(console.log);
                 });
             })
-            .catch((err) => {
-                console.log(chalk.bgRedBright('Something went wrong while listing up blueprints'));
-                console.error(err)
-            })
+            .catch(this.handleListError)
     }
 
     infoBlue(name: string) {
@@ -121,6 +110,11 @@ export class ApplicationCli extends Application {
 
     async promptout(questions: any[]) {
         return prompt(questions);
+    }
+
+    private handleListError(err: any) {
+        console.log(chalk.bgRedBright('Something went wrong while listing up blueprints'));
+        console.error(err)
     }
 
 }

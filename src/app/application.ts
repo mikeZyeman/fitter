@@ -1,4 +1,4 @@
-import { Architect } from "./Architect";
+import { Architect } from "./components/Architect";
 
 /*
 import { Implement } from "./installer/implement";
