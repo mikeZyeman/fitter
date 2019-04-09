@@ -1,8 +1,8 @@
 import chalk from 'chalk';
 
-const { prompt } = require('enquirer');
-
 import { Application } from './application';
+
+const { prompt } = require('enquirer');
 
 export class ApplicationCli extends Application {
 
