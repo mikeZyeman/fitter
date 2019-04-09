@@ -13,3 +13,6 @@ os:
 branches:
   only:
     - master
+
+before_install:
+  - npm link
