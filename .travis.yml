@@ -10,12 +10,6 @@ os:
   - osx
   - windows
 
-before_install:
-  - npm i -g npm@version-number
-
 branches:
   only:
     - master
-
-
-
