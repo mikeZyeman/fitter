@@ -16,5 +16,6 @@ branches:
 
 before_install:
   - npm install
+  - npm install typescript -g
   - npm run build
   - npm link
