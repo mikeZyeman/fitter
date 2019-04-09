@@ -15,5 +15,6 @@ branches:
     - master
 
 before_install:
+  - npm install
   - npm run build
   - npm link
