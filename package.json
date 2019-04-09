@@ -23,7 +23,7 @@
   "dependencies": {
     "@types/fs-extra": "^5.0.5",
     "chalk": "^2.4.2",
-    "commander": "^2.19.0",
+    "commander": "^2.20.0",
     "directory-tree": "^2.2.1",
     "enquirer": "^2.3.0",
     "fs-extra": "^7.0.1",
@@ -32,9 +32,9 @@
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.6",
-    "@types/node": "^11.13.0",
+    "@types/node": "^11.13.2",
     "chai": "^4.2.0",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.2",
     "prettier": "^1.16.4",
     "shelljs": "^0.8.3",
     "tslint": "^5.15.0",
